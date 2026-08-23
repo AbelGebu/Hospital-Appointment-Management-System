@@ -1,0 +1,78 @@
+@model IEnumerable<HospitalAppoinmentManagementSystem.Models.Doctor>
+
+@{
+    ViewData["Title"] = "Find a Doctor";
+}
+
+<div class="mb-4">
+    <h1 class="h3 mb-0">Find a Doctor</h1>
+    <p class="text-muted mb-0">Browse doctors by specialty and book an available time slot.</p>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!(User.Identity?.IsAuthenticated ?? false))
+{
+    <div class="alert alert-info">
+        <a asp-area="Identity" asp-page="/Account/Login" class="alert-link">Log in</a> as a patient to book a time slot.
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-secondary">No doctors are available at the moment. Please check back later.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-lg-2 g-4">
+        @foreach (var doctor in Model)
+        {
+            var availableSlots = doctor.TimeSlots?
+                .Where(t => !t.IsBooked && t.SlotTime > DateTime.Now)
+                .OrderBy(t => t.SlotTime)
+                .ToList() ?? new List<HospitalAppoinmentManagementSystem.Models.Timeslot>();
+
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="h5 mb-0">Dr. @doctor.FullName</h2>
+                            <span class="badge bg-primary-subtle text-primary-emphasis">@doctor.Specialty</span>
+                        </div>
+                        <span class="badge bg-secondary">@availableSlots.Count available</span>
+                    </div>
+                    <div class="card-body">
+                        @if (!availableSlots.Any())
+                        {
+                            <p class="text-muted mb-0">No available time slots right now.</p>
+                        }
+                        else
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var slot in availableSlots)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                        <span>@slot.SlotTime.ToString("dddd, dd MMM yyyy - hh:mm tt")</span>
+                                        @if (User.Identity?.IsAuthenticated ?? false)
+                                        {
+                                            <form asp-controller="Patient" asp-action="Book" method="post" class="m-0">
+                                                <input type="hidden" name="timeSlotId" value="@slot.TimeSlotId" />
+                                                <button type="submit" class="btn btn-sm btn-primary">Book</button>
+                                            </form>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
