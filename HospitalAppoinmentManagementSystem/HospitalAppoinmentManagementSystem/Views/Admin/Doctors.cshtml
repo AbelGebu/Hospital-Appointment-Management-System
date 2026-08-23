@@ -1,0 +1,54 @@
+﻿@model IEnumerable<HospitalAppoinmentManagementSystem.Models.Doctor>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Doctor Management</h2>
+    <a asp-action="AddDoctor" class="btn btn-primary">Add New Doctor</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Specialty</th>
+            <th>Email</th>
+            <th>Available Time Slots</th>
+            <th>Add Slot</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doctor in Model)
+        {
+            <tr>
+                <td>@doctor.FullName</td>
+                <td>@doctor.Specialty</td>
+                <td>@doctor.Email</td>
+                <td>
+                    @if (doctor.TimeSlots != null && doctor.TimeSlots.Any())
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var slot in doctor.TimeSlots)
+                            {
+                                <li>
+                                    <span class="badge @(slot.IsBooked ? "bg-secondary" : "bg-success")">
+                                        @slot.SlotTime.ToString("g") @(slot.IsBooked ? "(Booked)" : "(Available)")
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No slots added</span>
+                    }
+                </td>
+                <td>
+                    <form asp-action="AddTimeSlot" method="post" class="d-flex gap-2">
+                        <input type="hidden" name="doctorId" value="@doctor.DoctorId" />
+                        <input type="datetime-local" name="slotTime" class="form-control form-control-sm" required />
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Add</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

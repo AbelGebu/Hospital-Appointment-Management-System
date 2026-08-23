@@ -1,0 +1,25 @@
+﻿@model IEnumerable<HospitalAppoinmentManagementSystem.Models.Patient>
+
+<h2>Registered Patients</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Patient ID</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var patient in Model)
+        {
+            <tr>
+                <td>@patient.PatientId</td>
+                <td>@patient.FullName</td>
+                <td>@patient.Email</td>
+                <td>@(string.IsNullOrEmpty(patient.Phone) ? "N/A" : patient.Phone)</td>
+            </tr>
+        }
+    </tbody>
+</table>

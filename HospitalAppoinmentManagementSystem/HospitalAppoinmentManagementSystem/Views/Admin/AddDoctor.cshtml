@@ -1,0 +1,20 @@
+﻿@model HospitalAppoinmentManagementSystem.Models.Doctor
+
+<h2>Add New Doctor</h2>
+
+<form asp-action="AddDoctor" method="post" class="col-md-6">
+    <div class="mb-3">
+        <label asp-for="FullName" class="form-label">Full Name</label>
+        <input asp-for="FullName" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Specialty" class="form-label">Specialty</label>
+        <input asp-for="Specialty" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">Email Address</label>
+        <input asp-for="Email" type="email" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-success">Save Doctor</button>
+    <a asp-action="Doctors" class="btn btn-secondary">Cancel</a>
+</form>
