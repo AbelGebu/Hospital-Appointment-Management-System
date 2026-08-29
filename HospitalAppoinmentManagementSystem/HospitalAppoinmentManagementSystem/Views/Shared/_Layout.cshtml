@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HospitalAppoinmentManagementSystem</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HospitalAppoinmentManagementSystem.styles.css" asp-append-version="true" />
+
+    <style>
+        
+        body {
+        background-color: #f4f7f6;
+        color: #2c3e50;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        }
+
+        .main-content {
+        flex: 1;
+        }
+
+        
+        .navbar-turquoise {
+        background-color: #00A896 !important;
+        box-shadow: 0 4px 12px rgba(0, 168, 150, 0.15);
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        }
+
+        .navbar-turquoise .navbar-brand {
+        color: #ffffff !important;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        }
+
+        .navbar-turquoise .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 500;
+        padding: 0.5rem 0.85rem !important;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        }
+
+        .navbar-turquoise .nav-link:hover,
+        .navbar-turquoise .nav-link:focus {
+        color: #ffffff !important;
+        background-color: rgba(255, 255, 255, 0.12);
+        }
+
+        
+        .navbar-turquoise .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .navbar-turquoise .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        
+        .footer-turquoise {
+        background-color: #ffffff;
+        border-top: 1px solid #e1e8ed;
+        color: #6c757d;
+        font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-turquoise mb-4">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    Hospital Management
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Doctors">Manage Doctors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Patients">Manage Patients</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Doctor"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Doctor" asp-action="MyAppointments">My Schedule</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Patient"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Patient" asp-action="Doctors">Browse Doctors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Patient" asp-action="MyAppointments">My Appointments</a>
+                            </li>
+                        }
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container main-content">
+        <main role="main" class="pb-4">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer-turquoise py-3 mt-auto">
+        <div class="container text-center text-sm-start">
+            <span>&copy; 2026 - HospitalAppoinmentManagementSystem</span>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
