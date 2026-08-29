@@ -1,0 +1,116 @@
+﻿@model HospitalAppoinmentManagementSystem.Models.Doctor
+
+<style>
+    
+    body {
+        background-color: #f4f7f6;
+        color: #2c3e50;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    
+    .custom-card {
+        background-color: #ffffff;
+        border: 1px solid #e1e8ed;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 32px;
+        margin-top: 2rem;
+    }
+
+    
+    .title-emerald {
+        color: #00a877;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    
+    .btn-emerald {
+        background-color: #00a877;
+        color: #ffffff;
+        border: none;
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-emerald:hover {
+            background-color: #008f65;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 168, 119, 0.25);
+        }
+
+    
+    .btn-neutral {
+        background-color: #f1f3f5;
+        color: #5a6a75;
+        border: 1px solid #ced4da;
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-neutral:hover {
+            background-color: #e9ecef;
+            color: #2c3e50;
+        }
+
+    
+    .form-label-custom {
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+
+    .form-control-emerald {
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        padding: 10px 14px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .form-control-emerald:focus {
+            border-color: #00a877;
+            box-shadow: 0 0 0 0.2rem rgba(0, 168, 119, 0.15);
+        }
+</style>
+
+<div class="container d-flex justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="custom-card">
+            <div class="mb-4">
+                <h2 class="title-emerald m-0">Add New Doctor</h2>
+                <p class="text-muted small mt-1">Fill in the details below to register a new physician into the system.</p>
+            </div>
+
+            <form asp-action="AddDoctor" method="post">
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label form-label-custom">Full Name</label>
+                    <input asp-for="FullName" class="form-control form-control-emerald" placeholder="e.g. Dr. Jane Doe" required />
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Specialty" class="form-label form-label-custom">Specialty</label>
+                    <input asp-for="Specialty" class="form-control form-control-emerald" placeholder="e.g. Cardiology" required />
+                    <span asp-validation-for="Specialty" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Email" class="form-label form-label-custom">Email Address</label>
+                    <input asp-for="Email" type="email" class="form-control form-control-emerald" placeholder="doctor@hospital.com" required />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end">
+                    <a asp-action="Doctors" class="btn btn-neutral">Cancel</a>
+                    <button type="submit" class="btn btn-emerald">Save Doctor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

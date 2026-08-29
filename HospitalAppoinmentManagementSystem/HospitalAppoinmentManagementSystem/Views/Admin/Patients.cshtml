@@ -1,0 +1,110 @@
+﻿@model IEnumerable<HospitalAppoinmentManagementSystem.Models.Patient>
+
+<style>
+    
+    body {
+        background-color: #f4f7f6;
+        color: #2c3e50;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .custom-card {
+        background-color: #ffffff;
+        border: 1px solid #e1e8ed;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 24px;
+        margin-top: 2rem;
+    }
+
+    
+    .title-emerald {
+        color: #00a877;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .badge-emerald {
+        background-color: #e6f7f2;
+        color: #00a877;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+    }
+
+    
+    .custom-table {
+        margin-bottom: 0;
+    }
+
+    .custom-table thead th {
+        background-color: #f8faf9;
+        color: #5a6a75;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border-bottom: 2px solid #e1e8ed;
+        padding: 14px 16px;
+    }
+
+    .custom-table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #f0f9f6; 
+    }
+
+    .custom-table td {
+        padding: 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid #edf2f5;
+        color: #334e68;
+    }
+</style>
+
+<div class="container">
+    <div class="custom-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="title-emerald m-0">Registered Patients</h2>
+            <span class="badge-emerald">Total: @Model.Count()</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var patient in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold text-muted">#@patient.PatientId</td>
+                            <td class="fw-semibold">@patient.FullName</td>
+                            <td>
+                                <a href="mailto:@patient.Email" class="text-decoration-none text-secondary">
+                                    @patient.Email
+                                </a>
+                            </td>
+                            <td>
+                                @if (string.IsNullOrEmpty(patient.Phone))
+                                {
+                                    <span class="text-muted fst-italic">N/A</span>
+                                }
+                                else
+                                {
+                                    <span>@patient.Phone</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

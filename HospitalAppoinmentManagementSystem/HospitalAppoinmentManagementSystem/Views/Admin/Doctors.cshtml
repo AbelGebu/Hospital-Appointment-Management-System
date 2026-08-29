@@ -1,0 +1,183 @@
+﻿@model IEnumerable<HospitalAppoinmentManagementSystem.Models.Doctor>
+
+<style>
+    
+    body {
+        background-color: #f4f7f6;
+        color: #2c3e50;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    
+    .custom-card {
+        background-color: #ffffff;
+        border: 1px solid #e1e8ed;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 24px;
+        margin-top: 1.5rem;
+    }
+
+    
+    .title-emerald {
+        color: #00a877;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .btn-emerald {
+        background-color: #00a877;
+        color: #ffffff;
+        border: none;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-emerald:hover {
+            background-color: #008f65;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 168, 119, 0.3);
+        }
+
+    .btn-outline-emerald {
+        color: #00a877;
+        border: 1.5px solid #00a877;
+        background-color: transparent;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-outline-emerald:hover {
+            background-color: #00a877;
+            color: #ffffff;
+        }
+
+    
+    .custom-table {
+        margin-bottom: 0;
+    }
+
+        .custom-table thead th {
+            background-color: #f8faf9;
+            color: #5a6a75;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-bottom: 2px solid #e1e8ed;
+            padding: 14px 16px;
+        }
+
+        .custom-table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+            .custom-table tbody tr:hover {
+                background-color: #f0f9f6; 
+            }
+
+        .custom-table td {
+            padding: 16px;
+            vertical-align: middle;
+            border-bottom: 1px solid #edf2f5;
+            color: #334e68;
+        }
+
+    
+    .badge-available {
+        background-color: #e6f7f2;
+        color: #00a877;
+        font-weight: 600;
+        border: 1px solid #b3e6d5;
+        padding: 5px 10px;
+        border-radius: 6px;
+    }
+
+    .badge-booked {
+        background-color: #f1f3f5;
+        color: #6c757d;
+        font-weight: 500;
+        border: 1px solid #dee2e6;
+        padding: 5px 10px;
+        border-radius: 6px;
+    }
+
+    .form-control-emerald {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+    }
+
+        .form-control-emerald:focus {
+            border-color: #00a877;
+            box-shadow: 0 0 0 0.2rem rgba(0, 168, 119, 0.15);
+        }
+</style>
+
+<div class="container">
+    <div class="custom-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="title-emerald m-0">Doctor Management</h2>
+            <a asp-action="AddDoctor" class="btn btn-emerald">
+                + Add New Doctor
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Doctor Name</th>
+                        <th>Specialty</th>
+                        <th>Email</th>
+                        <th>Time Slots</th>
+                        <th>Add Slot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var doctor in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@doctor.FullName</td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    @doctor.Specialty
+                                </span>
+                            </td>
+                            <td>
+                                <a href="mailto:@doctor.Email" class="text-decoration-none text-secondary">
+                                    @doctor.Email
+                                </a>
+                            </td>
+                            <td>
+                                @if (doctor.TimeSlots != null && doctor.TimeSlots.Any())
+                                {
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach (var slot in doctor.TimeSlots)
+                                        {
+                                            <span class="@(slot.IsBooked ? "badge-booked" : "badge-available")">
+                                                @slot.SlotTime.ToString("g") @(slot.IsBooked ? "(Booked)" : "(Available)")
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted fst-italic">No slots added</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="AddTimeSlot" method="post" class="d-flex gap-2">
+                                    <input type="hidden" name="doctorId" value="@doctor.DoctorId" />
+                                    <input type="datetime-local" name="slotTime" class="form-control form-control-sm form-control-emerald" required />
+                                    <button type="submit" class="btn btn-sm btn-outline-emerald">Add</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
