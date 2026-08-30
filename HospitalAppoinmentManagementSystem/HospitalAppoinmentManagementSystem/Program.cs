@@ -2,6 +2,8 @@ using HospitalAppoinmentManagementSystem.Data;
 using HospitalAppoinmentManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace HospitalAppoinmentManagementSystem
 {
@@ -12,7 +14,9 @@ namespace HospitalAppoinmentManagementSystem
             var builder = WebApplication.CreateBuilder(args);
 
             // 1. HospitalDbContext with Retry Policy enabled
-            var con = builder.Configuration.GetConnectionString("HospitalDbConnection");
+            var con = builder.Configuration.GetConnectionString("HospitalDbConnection")
+                ?? throw new InvalidOperationException("Connection string 'HospitalDbConnection' not found.");
+
             builder.Services.AddDbContext<HospitalDbContext>(options =>
                 options.UseSqlServer(con, sqlOptions =>
                 {
@@ -41,6 +45,28 @@ namespace HospitalAppoinmentManagementSystem
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            // Safe JWT Key Extraction
+            var jwtSettings = builder.Configuration.GetSection("Jwt");
+            var jwtKey = jwtSettings["Key"]
+                ?? throw new InvalidOperationException("JWT Secret Key is missing in appsettings.json.");
+            var key = Encoding.UTF8.GetBytes(jwtKey);
+
+            builder.Services.AddAuthentication()
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtSettings["Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = jwtSettings["Audience"],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateLifetime = true
+                    };
+                });
+
+            builder.Services.AddAuthorization();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
@@ -55,12 +81,12 @@ namespace HospitalAppoinmentManagementSystem
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // .NET 9 Static Assets pipeline
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
@@ -94,4 +120,3 @@ namespace HospitalAppoinmentManagementSystem
         }
     }
 }
-
