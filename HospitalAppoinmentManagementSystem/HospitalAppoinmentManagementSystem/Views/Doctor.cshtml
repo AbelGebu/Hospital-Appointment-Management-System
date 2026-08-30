@@ -1,0 +1,87 @@
+@model IEnumerable<HospitalAppoinmentManagementSystem.Models.Appointment>
+
+<style>
+    
+    .text-teal { color: #0d9488 !important; }
+    .bg-teal-header { background-color: #0f766e !important; color: white !important; }
+    .btn-teal { background-color: #0d9488 !important; color: white !important; border: none; }
+    .btn-teal:hover { background-color: #0f766e !important; color: white !important; }
+    
+   
+    .page-title {
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    .page-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 50px;
+        background-color: #0d9488;
+        border-radius: 2px;
+    }
+    .custom-table {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+</style>
+
+<div class="container my-4">
+    <h2 class="page-title text-teal mb-4">My Schedule & Appointments</h2>
+
+    <div class="table-responsive custom-table">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-teal-header">
+                <tr>
+                    <th class="py-3 ps-4">Patient Name</th>
+                    <th class="py-3">Patient Email</th>
+                    <th class="py-3">Slot Time</th>
+                    <th class="py-3">Status</th>
+                    <th class="py-3 pe-4 text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            No appointments scheduled at the moment.
+                        </td>
+                    </tr>
+                }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="py-3 ps-4 fw-semibold text-secondary">@item.Patient?.FullName</td>
+                        <td class="py-3 text-muted">@item.Patient?.Email</td>
+                        <td class="py-3">
+                            <span class="text-dark">@item.Timeslot?.SlotTime.ToString("g")</span>
+                        </td>
+                        <td class="py-3">
+                            <span class="badge rounded-pill @(item.Status == "Approved" ? "bg-success" : item.Status == "Cancelled" ? "bg-danger" : "bg-warning text-dark")">
+                                @item.Status
+                            </span>
+                        </td>
+                        <td class="py-3 pe-4 text-end">
+                            @if (item.Status == "Pending")
+                            {
+                                <form asp-action="Approve" asp-route-id="@item.AppointmentId" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-teal btn-sm px-3 shadow-sm">Approve</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">-</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
