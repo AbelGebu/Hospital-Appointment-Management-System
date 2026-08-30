@@ -1,0 +1,123 @@
+@model IEnumerable<HospitalAppoinmentManagementSystem.Models.Doctor>
+
+@{
+    ViewData["Title"] = "Find a Doctor";
+}
+
+<style>
+    
+    :root {
+        --teal-primary: #0d9488;     
+        --teal-hover: #0f766e;        
+        --teal-light: #f0fdfa;        
+        --teal-border: #ccfbf1;      
+        --teal-muted-text: #115e59;   
+    }
+
+    
+    .badge-teal-subtle {
+        background-color: var(--teal-light);
+        color: var(--teal-muted-text);
+        border: 1px solid var(--teal-border);
+    }
+
+   
+    .btn-teal {
+        background-color: var(--teal-primary);
+        color: white;
+        border: none;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-teal:hover {
+        background-color: var(--teal-hover);
+        color: white;
+    }
+
+   
+    .btn-teal:active {
+        transform: scale(0.98);
+    }
+
+    
+    .doctor-card-accent {
+        border-left: 4px solid var(--teal-primary) !important;
+    }
+</style>
+
+<div class="mb-4">
+    <h1 class="h3 mb-0 fw-bold" style="color: var(--teal-hover);">Find a Doctor</h1>
+    <p class="text-muted mb-0">Browse doctors by specialty and book an available time slot.</p>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!(User.Identity?.IsAuthenticated ?? false))
+{
+    
+    <div class="alert alert-info border-0 shadow-sm" style="background-color: var(--teal-light); color: var(--teal-muted-text);">
+        <a asp-area="Identity" asp-page="/Account/Login" class="fw-bold" style="color: var(--teal-hover); text-decoration: underline;">Log in</a> as a patient to book a time slot.
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-secondary border-0 shadow-sm">No doctors are available at the moment. Please check back later.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-lg-2 g-4">
+        @foreach (var doctor in Model)
+        {
+            var availableSlots = doctor.TimeSlots?
+                .Where(t => !t.IsBooked && t.SlotTime > DateTime.Now)
+                .OrderBy(t => t.SlotTime)
+                .ToList() ?? new List<HospitalAppoinmentManagementSystem.Models.Timeslot>();
+
+            <div class="col">
+                
+                <div class="card h-100 shadow-sm border-0 doctor-card-accent">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom-0 pt-3">
+                        <div>
+                            <h2 class="h5 mb-1 fw-bold text-dark">Dr. @doctor.FullName</h2>
+                           
+                            <span class="badge badge-teal-subtle px-2.5 py-1.5 rounded">@doctor.Specialty</span>
+                        </div>
+                        <span class="badge bg-light text-secondary border small">@availableSlots.Count available</span>
+                    </div>
+                    <div class="card-body">
+                        @if (!availableSlots.Any())
+                        {
+                            <p class="text-muted mb-0 small">No available time slots right now.</p>
+                        }
+                        else
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var slot in availableSlots)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2.5">
+                                        <span class="text-secondary small fw-medium">@slot.SlotTime.ToString("dddd, dd MMM yyyy - hh:mm tt")</span>
+                                        @if (User.Identity?.IsAuthenticated ?? false)
+                                        {
+                                            <form asp-controller="Patient" asp-action="Book" method="post" class="m-0">
+                                                <input type="hidden" name="timeSlotId" value="@slot.TimeSlotId" />
+                                                
+                                                <button type="submit" class="btn btn-sm btn-teal px-3 rounded-pill shadow-sm">Book</button>
+                                            </form>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
