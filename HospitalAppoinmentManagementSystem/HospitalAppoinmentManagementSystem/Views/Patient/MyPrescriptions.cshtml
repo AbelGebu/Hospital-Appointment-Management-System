@@ -1,0 +1,115 @@
+﻿@model IEnumerable<HospitalAppoinmentManagementSystem.Models.Prescription>
+
+@{
+    ViewData["Title"] = "My Prescriptions";
+}
+
+<style>
+    :root {
+        --titanium-white: #ffffff;
+        --titanium-bg: #f8f9fa;
+        --emerald-green: #059669;
+        --emerald-hover: #047857;
+        --emerald-light: #ecfdf5;
+        --text-dark: #1f2937;
+        --border-color: #e5e7eb;
+    }
+
+    body {
+        background-color: var(--titanium-white);
+        color: var(--text-dark);
+    }
+
+    .text-emerald {
+        color: var(--emerald-green) !important;
+    }
+
+    .prescription-card {
+        background-color: var(--titanium-white);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .prescription-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(5, 150, 105, 0.08);
+            border-color: var(--emerald-green);
+        }
+
+    .prescription-header {
+        background-color: var(--emerald-light);
+        border-bottom: 1px solid var(--border-color);
+        border-top-left-radius: 11px !important;
+        border-top-right-radius: 11px !important;
+    }
+
+    .badge-emerald {
+        background-color: var(--emerald-green);
+        color: #ffffff;
+    }
+
+    .empty-state {
+        background-color: var(--titanium-bg);
+        border: 1px dashed var(--border-color);
+        border-radius: 12px;
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-emerald mb-0">My Prescriptions</h2>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state text-center p-5 my-4">
+            <i class="bi bi-file-earmark-medical text-muted display-4 mb-3 d-block"></i>
+            <h5 class="fw-semibold text-secondary">No Prescriptions Found</h5>
+            <p class="text-muted mb-0">You do not have any active or past prescriptions recorded at this time.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card prescription-card h-100">
+                        <div class="card-header prescription-header py-3 px-4 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-semibold text-emerald">
+                                <i class="bi bi-person-badge me-2"></i>Dr. @item.Appointment?.Timeslot?.Doctor?.FullName
+                            </h5>
+                            <span class="badge badge-emerald px-2 py-1 fs-7">
+                                @item.DatePrescribed.ToString("MMM dd, yyyy")
+                            </span>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="text-muted small mb-3 fw-medium">
+                                    <i class="bi bi-calendar-event me-1 text-emerald"></i>
+                                    Appointment: @item.Appointment?.Timeslot?.SlotTime.ToString("MMM dd, yyyy - hh:mm tt")
+                                </div>
+                                <hr class="my-3 text-muted opacity-25" />
+
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-dark mb-1">Medication & Dosage</h6>
+                                    <p class="card-text text-secondary mb-0" style="white-space: pre-line;">@item.MedicationDetails</p>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(item.Notes))
+                                {
+                                    <div class="mt-3 pt-3 border-top">
+                                        <h6 class="fw-bold text-dark mb-1">Doctor's Notes</h6>
+                                        <p class="card-text text-muted fst-italic mb-0">@item.Notes</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

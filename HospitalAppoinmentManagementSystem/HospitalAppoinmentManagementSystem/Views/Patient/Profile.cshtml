@@ -1,0 +1,118 @@
+﻿@model HospitalAppoinmentManagementSystem.Models.Patient
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<style>
+    :root {
+        --titanium-white: #ffffff;
+        --titanium-bg: #f8f9fa;
+        --emerald-green: #059669;
+        --emerald-hover: #047857;
+        --emerald-light: #ecfdf5;
+        --text-dark: #1f2937;
+        --border-color: #e5e7eb;
+    }
+
+    body {
+        background-color: var(--titanium-white);
+        color: var(--text-dark);
+    }
+
+    .profile-card {
+        background-color: var(--titanium-white);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .profile-header {
+        background-color: var(--emerald-light);
+        border-bottom: 2px solid var(--emerald-green);
+        border-top-left-radius: 11px !important;
+        border-top-right-radius: 11px !important;
+    }
+
+    .text-emerald {
+        color: var(--emerald-green) !important;
+    }
+
+    .btn-emerald {
+        background-color: var(--emerald-green);
+        color: #ffffff;
+        border: none;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+        .btn-emerald:hover, .btn-emerald:focus {
+            background-color: var(--emerald-hover);
+            color: #ffffff;
+        }
+
+    .form-control:focus {
+        border-color: var(--emerald-green);
+        box-shadow: 0 0 0 0.25rem rgba(5, 150, 105, 0.15);
+    }
+
+    .alert-emerald {
+        background-color: var(--emerald-light);
+        border: 1px solid var(--emerald-green);
+        color: var(--emerald-hover);
+    }
+</style>
+
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-md-6">
+        <div class="card profile-card">
+            <div class="card-header profile-header py-3 px-4">
+                <h4 class="mb-0 fw-bold text-emerald">
+                    <i class="bi bi-person-circle me-2"></i>My Profile
+                </h4>
+            </div>
+
+            <div class="card-body p-4">
+                @if (ViewBag.Message != null)
+                {
+                    <div class="alert alert-emerald alert-dismissible fade show fw-medium mb-4" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>@ViewBag.Message
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form asp-action="Profile" method="post">
+                    <input type="hidden" asp-for="PatientId" />
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold">Email Address</label>
+                        <input asp-for="Email" class="form-control bg-light text-muted" readonly />
+                        <small class="text-muted d-block mt-1">
+                            <i class="bi bi-lock-fill me-1"></i>Email address cannot be changed.
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label fw-semibold">Full Name</label>
+                        <input asp-for="FullName" class="form-control" required placeholder="Enter your full name" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Phone" class="form-label fw-semibold">Phone Number</label>
+                        <input asp-for="Phone" class="form-control" placeholder="Enter your phone number" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-2">
+                        <a asp-action="MyAppointments" class="btn btn-outline-secondary px-4">Back</a>
+                        <button type="submit" class="btn btn-emerald px-4 fw-medium">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
