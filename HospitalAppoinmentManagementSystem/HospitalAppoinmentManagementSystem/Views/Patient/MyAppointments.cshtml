@@ -1,0 +1,115 @@
+@model IEnumerable<HospitalAppoinmentManagementSystem.Models.Appointment>
+
+@{
+    ViewData["Title"] = "My Appointments";
+}
+
+<style>
+   
+    :root {
+        --teal-primary: #0d9488;      
+        --teal-hover: #0f766e;        
+        --teal-light: #f0fdfa;        /
+        --teal-border: #ccfbf1;       
+        --teal-muted-text: #115e59;   
+    }
+
+    .btn-teal {
+        background-color: var(--teal-primary);
+        color: white;
+        border: none;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-teal:hover {
+        background-color: var(--teal-hover);
+        color: white;
+    }
+
+   
+    .table-teal-header {
+        background-color: var(--teal-light) !important;
+        color: var(--teal-muted-text);
+        border-bottom: 2px solid var(--teal-border);
+    }
+
+    
+    .teal-card-accent {
+        border-left: 4px solid var(--teal-primary);
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0 fw-bold" style="color: var(--teal-hover);">My Appointments</h1>
+        <p class="text-muted mb-0">Track the status of your booked appointments.</p>
+    </div>
+    
+    <a asp-action="Doctors" class="btn btn-teal px-4 shadow-sm">Book New Appointment</a>
+</div>
+
+@if (!Model.Any())
+{
+    
+    <div class="alert alert-info border-0 shadow-sm" style="background-color: var(--teal-light); color: var(--teal-muted-text);">
+        You don't have any appointments yet. <a asp-action="Doctors" class="fw-bold" style="color: var(--teal-hover);">Find a doctor</a> to book one.
+    </div>
+}
+else
+{
+   
+    <div class="card shadow-sm border-0 teal-card-accent">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                
+                <thead class="table-teal-header">
+                    <tr>
+                        <th scope="col" class="py-3">Doctor</th>
+                        <th scope="col" class="py-3">Specialty</th>
+                        <th scope="col" class="py-3">Date &amp; Time</th>
+                        <th scope="col" class="py-3">Status</th>
+                        <th scope="col" class="text-end py-3 pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appointment in Model.OrderByDescending(a => a.Timeslot!.SlotTime))
+                    {
+                        var badgeClass = appointment.Status switch
+                        {
+                            "Approved" => "bg-success",
+                            "Cancelled" => "bg-danger",
+                            _ => "bg-warning text-dark"
+                        };
+                        var canCancel = appointment.Status != "Cancelled"
+                            && appointment.Timeslot != null
+                            && appointment.Timeslot.SlotTime > DateTime.Now;
+
+                        <tr>
+                            <td class="fw-semibold text-dark">Dr. @appointment.Timeslot?.Doctor?.FullName</td>
+                            <td>
+                                <span class="badge bg-light text-secondary border">
+                                    @appointment.Timeslot?.Doctor?.Specialty
+                                </span>
+                            </td>
+                            <td class="text-secondary">@(appointment.Timeslot?.SlotTime.ToString("dddd, dd MMM yyyy - hh:mm tt") ?? "—")</td>
+                            <td><span class="badge @badgeClass shadow-sm">@appointment.Status</span></td>
+                            <td class="text-end pe-4">
+                                @if (canCancel)
+                                {
+                                    <form asp-action="Cancel" asp-route-id="@appointment.AppointmentId" method="post"
+                                          class="d-inline" onsubmit="return confirm('Cancel this appointment?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger px-3 rounded-pill">Cancel</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">&mdash;</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
