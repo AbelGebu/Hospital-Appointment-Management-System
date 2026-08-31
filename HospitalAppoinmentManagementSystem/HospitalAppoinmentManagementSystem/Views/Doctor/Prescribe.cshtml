@@ -1,0 +1,100 @@
+﻿@model HospitalAppoinmentManagementSystem.Models.Prescription
+
+@{
+    ViewData["Title"] = "Write Prescription";
+}
+
+<style>
+    :root {
+        --titanium-white: #ffffff;
+        --titanium-bg: #f8f9fa;
+        --emerald-green: #059669;
+        --emerald-hover: #047857;
+        --emerald-light: #ecfdf5;
+        --text-dark: #1f2937;
+        --border-color: #e5e7eb;
+    }
+
+    body {
+        background-color: var(--titanium-white);
+        color: var(--text-dark);
+    }
+
+    .prescription-card {
+        background-color: var(--titanium-white);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .prescription-header {
+        background-color: var(--emerald-light);
+        border-bottom: 2px solid var(--emerald-green);
+        border-top-left-radius: 11px !important;
+        border-top-right-radius: 11px !important;
+    }
+
+    .text-emerald {
+        color: var(--emerald-green) !important;
+    }
+
+    .btn-emerald {
+        background-color: var(--emerald-green);
+        color: #ffffff;
+        border: none;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .btn-emerald:hover, .btn-emerald:focus {
+        background-color: var(--emerald-hover);
+        color: #ffffff;
+    }
+
+    .form-control:focus {
+        border-color: var(--emerald-green);
+        box-shadow: 0 0 0 0.25rem rgba(5, 150, 105, 0.15);
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-3 text-emerald">Write Prescription</h2>
+
+            <div class="card prescription-card">
+                <div class="card-header prescription-header py-3 px-4">
+                    <h5 class="mb-0 fw-semibold text-emerald">
+                        <i class="bi bi-person-fill me-2"></i>Patient: @ViewBag.PatientName
+                    </h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Prescribe" method="post">
+                        <input type="hidden" asp-for="AppointmentId" />
+
+                        <div class="mb-4">
+                            <label asp-for="MedicationDetails" class="form-label fw-semibold">Medication & Dosage</label>
+                            <textarea asp-for="MedicationDetails" class="form-control" rows="4" placeholder="Name of the medicine."></textarea>
+                            <span asp-validation-for="MedicationDetails" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Notes" class="form-label fw-semibold">Additional Instructions / Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Instructions."></textarea>
+                            <span asp-validation-for="Notes" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-2">
+                            <a asp-action="MyAppointments" class="btn btn-outline-secondary px-4">
+                                Back to Appointments
+                            </a>
+                            <button type="submit" class="btn btn-emerald px-4 fw-medium">
+                                Save Prescription
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
